@@ -14,6 +14,7 @@ from motti.standard import (
     is_document_file,
     o_d,
     mkdir_or_exist,
+    uint8_imread,
 )
 
 from motti.extension import seed_everything

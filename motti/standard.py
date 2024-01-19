@@ -7,6 +7,15 @@ from typing import Optional, Union
 from pathlib import Path
 import argparse
 import yaml
+import numpy as np
+
+def uint8_imread(path: str):
+    import matplotlib.pyplot as plt
+    img = plt.imread(path)
+    if img.dtype != np.uint8 and img.max() <= 1.0:
+        img = img * 255
+        img = img.astype(np.uint8)
+    return img
 
 
 def pil2str(x):
