@@ -3,6 +3,7 @@ import base64
 from PIL import Image
 from datetime import datetime
 import os
+import sys
 from typing import Optional, Union
 from pathlib import Path
 import argparse
@@ -115,3 +116,21 @@ def mkdir_or_exist(dir_name, mode=0o777):
         return
     dir_name = os.path.expanduser(dir_name)
     os.makedirs(dir_name, mode=mode, exist_ok=True)
+
+
+def append_current_dir(filepath):
+    current_dir = os.path.dirname(os.path.abspath(filepath))
+    sys.path.append(current_dir)
+    return current_dir
+
+def append_parent_dir(filepath):
+    current_dir = os.path.dirname(os.path.abspath(filepath))
+    parent_dir = os.path.dirname(current_dir)
+    sys.path.append(parent_dir)
+    return parent_dir
+
+def load_json(path):
+    import json
+    with open(path, "r") as f:
+        return json.load(f)
+    
