@@ -16,8 +16,10 @@ from motti.standard import (
     mkdir_or_exist,
     uint8_imread,
     load_json,
+    dump_json,
     append_current_dir,
     append_parent_dir,
+    figure2pil,
 )
 
 from motti.extension import seed_everything

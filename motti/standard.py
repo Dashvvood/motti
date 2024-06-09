@@ -1,17 +1,19 @@
 from io import BytesIO
-import base64
-from PIL import Image
+import PIL
 from datetime import datetime
 import os
 import sys
 from typing import Optional, Union
 from pathlib import Path
 import argparse
-import yaml
 import numpy as np
+import io
+import matplotlib.pyplot as plt
+import base64
+import yaml
+import json
 
 def uint8_imread(path: str):
-    import matplotlib.pyplot as plt
     img = plt.imread(path)
     if img.dtype != np.uint8 and img.max() <= 1.0:
         img = img * 255
@@ -29,7 +31,7 @@ def pil2str(x):
 
 def str2pil(s):
     b64 = base64.b64decode(s.encode('utf-8'))
-    return Image.open(BytesIO(b64))
+    return PIL.Image.open(BytesIO(b64))
 
 
 def get_datetime():
@@ -55,9 +57,11 @@ def is_abs_path(path: Union[Path, str]):
 def load_yaml(path):
     return yaml.safe_load(open(path, 'r'))
 
+
 def load_namespace_from_yaml(path):
     D = load_yaml(path)
     return argparse.Namespace(**D)
+
 
 def create_namespace(D:dict):
     return argparse.Namespace(**D)
@@ -123,14 +127,31 @@ def append_current_dir(filepath):
     sys.path.append(current_dir)
     return current_dir
 
+
 def append_parent_dir(filepath):
     current_dir = os.path.dirname(os.path.abspath(filepath))
     parent_dir = os.path.dirname(current_dir)
     sys.path.append(parent_dir)
     return parent_dir
 
+
 def load_json(path):
-    import json
     with open(path, "r") as f:
         return json.load(f)
     
+    
+def dump_json(d, path):
+    with open(path, "w") as f:
+        return json.dump(d, f, indent=4)
+
+
+def pt2numpy(images):
+    images.cpu().permute(0, 2, 3, 1).float().numpy()
+    return images
+
+
+def figure2pil(fig):
+    buf = io.BytesIO()
+    fig.savefig(buf, bbox_inches="tight", pad_inches=0.1)
+    buf.seek(0)
+    return PIL.Image.open(buf)
