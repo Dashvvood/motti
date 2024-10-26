@@ -155,3 +155,26 @@ def figure2pil(fig):
     fig.savefig(buf, bbox_inches="tight", pad_inches=0.1)
     buf.seek(0)
     return PIL.Image.open(buf)
+
+
+def normalize_image(image: np.ndarray, target_min: float = 0.0, target_max: float = 1.0) -> np.ndarray:
+    """
+    Normalize the pixel values of an image to a specified range.
+
+    Parameters:
+        image (np.ndarray): The input image as a NumPy array.
+        target_min (float): The minimum value of the normalized output range. Default is 0.0.
+        target_max (float): The maximum value of the normalized output range. Default is 1.0.
+
+    Returns:
+        np.ndarray: The normalized image with pixel values in the specified range.
+    """
+    min_val = np.min(image)
+    max_val = np.max(image)
+
+    if max_val == min_val:
+        raise ValueError("Maximum and minimum values of the image are the same. Normalization cannot be performed.")
+
+    normalized_image = (image - min_val) / (max_val - min_val) * (target_max - target_min) + target_min
+    return normalized_image
+

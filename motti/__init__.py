@@ -20,6 +20,7 @@ from motti.standard import (
     append_current_dir,
     append_parent_dir,
     figure2pil,
+    normalize_image
 )
 
 from motti.extension import seed_everything
