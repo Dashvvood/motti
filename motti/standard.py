@@ -77,20 +77,40 @@ def pt_to_pil(images):
     return images
 
 
-def numpy_to_pil(images):
+def numpy_to_pil(np_images):
     """
-    Convert a numpy image or a batch of images to a PIL image.
-    """
-    if images.ndim == 3:
-        images = images[None, ...]
-    images = (images * 255).round().astype("uint8")
-    if images.shape[-1] == 1:
-        # special case for grayscale (single channel) images
-        pil_images = [Image.fromarray(image.squeeze(), mode="L") for image in images]
-    else:
-        pil_images = [Image.fromarray(image) for image in images]
+    Convert a numpy image or a batch of images to PIL images.
 
-    return pil_images
+    Args:
+        np_images (numpy.ndarray): A numpy array of shape (H, W, C), (H, W), 
+                                    or (N, H, W, C), (N, H, W).
+
+    Returns:
+        list: A list of PIL.Image objects, even if the input is a single image.
+    """
+    # Ensure batch dimension for single images
+    if np_images.ndim == 3:  # Single RGB image or grayscale image (H, W, C)
+        np_images = np_images[None, ...]
+    elif np_images.ndim == 2:  # Single grayscale image (H, W)
+        np_images = np_images[None, ..., None]  # Add channel and batch dimension
+
+    # Ensure images are in uint8 format
+    if np_images.dtype != np.uint8:
+        np_images = (np_images * 255).round().astype("uint8")
+
+    # Convert each image in the batch to a PIL Image
+    pil_images = []
+    for image in np_images:
+        if image.shape[-1] == 1:  # Grayscale image
+            pil_images.append(PIL.Image.fromarray(image.squeeze(), mode="L"))
+        elif image.shape[-1] == 3:  # RGB image
+            pil_images.append(PIL.Image.fromarray(image, mode="RGB"))
+        elif image.shape[-1] == 4:  # RGBA image
+            pil_images.append(PIL.Image.fromarray(image, mode="RGBA"))
+        else:
+            raise ValueError(f"Unsupported number of channels: {image.shape[-1]}")
+
+    return pil_images if len(pil_images) > 1 else pil_images[0]  # Return a single image if applicable
 
 
 def is_video_file(file_name):
