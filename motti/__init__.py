@@ -25,4 +25,6 @@ from motti.standard import (
 
 from motti.extension import seed_everything
 
+from .color import Color
 
+from .model_info import summary
