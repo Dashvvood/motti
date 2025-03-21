@@ -118,7 +118,10 @@ class Color(SimpleNamespace):
     MARRS_GREEN = BaseColor(hex="#01847F")    # 马尔斯绿色
     SCHONBRUNNER_GELB = BaseColor(hex="#FBD26A")  # 申布伦黄色
     BURGUNDY_RED = BaseColor(hex="#470024")  # 勃艮第红色
+    TITIAN_RED = BaseColor(hex="#D44848")    # 提香红色
     
+    A521_RED = BaseColor(hex="#F90000")      # A521 红色
+    A521_BLUE = BaseColor(hex="#005BA9")     # A521 蓝色
     
 if __name__ == "__main__":    
     color = Color.MARRS_GREEN
